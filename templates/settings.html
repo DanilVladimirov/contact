@@ -1,0 +1,20 @@
+{% extends 'template.html' %}
+{% block body %}
+<form style="display: inline-grid;" action="" method="post">
+    {% csrf_token %}
+    <input type="text" placeholder="Имя" name="first_name" id="id_first_name">
+    <input type="text" placeholder="Фамилия" name="last_name" id="id_last_name">
+    <input type="submit" name="action" value="user_name">
+</form>
+
+<form method="post" action="" enctype="multipart/form-data">
+{% csrf_token %}
+{{ form_img.as_p }}
+<button type="submit" name="action" value="logo">submit</button>
+</form>
+<form method="post" action="" enctype="multipart/form-data">
+{% csrf_token %}
+{{ form_back.as_p }}
+<button type="submit" name="action" value="back_change">submit</button>
+</form>
+{% endblock %}

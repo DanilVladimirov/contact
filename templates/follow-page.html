@@ -1,0 +1,6 @@
+{% extends 'template.html' %}
+{% block body %}
+    {% for user in followed_users %}
+        <a href="/{{ user.pageusers_set.get.id }}">{{ user.username }}</a>
+    {% endfor %}
+{% endblock %}

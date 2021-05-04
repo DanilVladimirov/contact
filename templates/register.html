@@ -1,0 +1,30 @@
+{% extends 'template.html' %}
+{% block style %}
+    .create_user{
+        padding: 20px;
+        background-color: #67a1db;
+        text-align: center;
+        margin: auto;
+        width: 30%;
+        display: flex;
+        flex-flow: column wrap;
+    }
+{% endblock %}
+{% block body %}
+    <br>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="create_user">
+            <input required type="text" placeholder="Логін" name="username" id="id_username">
+            <input required type="password" placeholder="Пароль" name="password1" id="id_password1">
+            <input required type="password" placeholder="Перевірка паролю" name="password2" id="id_password2">
+            <button style="width: 20%;margin: auto" type="submit" name="Create User">Регистрация</button>
+            Есть аккаунт? <a href="{% url 'login_page' %}">Ввойти</a>
+        </div>
+    </form>
+{% endblock %}
+
+
+
+
+
