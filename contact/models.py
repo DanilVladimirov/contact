@@ -1,5 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from gdstorage.storage import (GoogleDriveStorage,
+                               GoogleDrivePermissionType,
+                               GoogleDrivePermissionRole,
+                               GoogleDriveFilePermission)
+permission = GoogleDriveFilePermission(
+   GoogleDrivePermissionRole.READER,
+   GoogleDrivePermissionType.USER,
+   "danilvladimirovnkk@gmail.com"
+)
+
+gd_storage = GoogleDriveStorage(permissions=(permission,))
 
 
 class PageUsers(models.Model):
@@ -7,8 +20,8 @@ class PageUsers(models.Model):
                              on_delete=models.SET_NULL,
                              null=True,
                              default=None)
-    logo = models.ImageField(blank=True, null=True)
-    background = models.ImageField(blank=True, null=True)
+    logo = models.ImageField(upload_to='logos', storage=gd_storage, null=True, blank=True)
+    background = models.ImageField(upload_to='backgrounds', storage=gd_storage, blank=True, null=True)
 
 
 class CommentsPost(models.Model):

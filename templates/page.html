@@ -115,7 +115,6 @@
     .follow_div{
     float: right;
     margin-top: 5px;
-
     }
     .follow_div button{
     border: none;
@@ -144,11 +143,12 @@
     }
 {% endblock %}
 {% block body %}
+    {% load contact_tags %}
     {% load static %}
     <div class="top">
         <div class="user_main_info">
             {% if page.logo %}
-            <img class="img_user" src="{{ page.logo.url }}">
+                <img class="img_user" src="{{ page.logo.url  }}">
             {% endif %}
             <div class="user_name">
                 <span>{{ page.user.first_name }} {{ page.user.last_name }}</span>
@@ -157,22 +157,35 @@
         <div class="user_theme">
             {% if page.background %}
                 <img class="img_theme" src="{{ page.background.url }}">
-                {% else %}
-            <img class="img_theme" src="/static/basic_back.jpg">
+            {% else %}
+                <img class="img_theme" src="/static/basic_back.jpg">
             {% endif %}
         </div>
     </div>
     <br>
-
     <div class="follows_info">
+            {% if page.user.follows.another_user.all|length > 5 %}
+                {% for user in page.user.follows.another_user.all %}
+                    {% if forloop.counter < 6 %}
+                        <img style="width: 25px;height: 25px;object-fit: cover;"
+                             src="{{ user.pageusers_set.get.logo.url }}">
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% for user in page.user.follows.another_user.all %}
+                    <img style="width: 30px;height: 30px;object-fit: cover;border-radius: 50%;"
+                         src="{{ user.pageusers_set.get.logo.url }}">
+                {% endfor %}
+            {% endif %}
+        <span><a href="{% url 'user_follows_page' page.user.id %}">підписки ></a></span>
         <div class="follow_div">
             <form method="post" action="">
                 {% csrf_token %}
                 {% if not request.user.username == page.user.username %}
                     {% if is_followed %}
-                        <button type="submit" name="action" value="unfollow">Отписаться</button>
+                        <button type="submit" name="action" value="unfollow">відписатись</button>
                     {% else %}
-                        <button type="submit" name="action" value="follow">Подписаться</button>
+                        <button type="submit" name="action" value="follow">підписатись</button>
                     {% endif %}
                 {% endif %}
             </form>
@@ -195,7 +208,7 @@
         {% endif %}
         {% if posts %}
         {% else %}
-            <span style="margin-left: 24px">Нету постов</span>
+            <span style="margin-left: 24px">Немає постів</span>
         {% endif %}
         <div class="posts">
             {% for post in posts %}
@@ -206,12 +219,11 @@
                             <form style="float: right" method="post" action="">
                                 {% csrf_token %}
                                 <input type="hidden" name="id" value="{{ post.id }}">
-                                <button class="btn_remove" type="submit" name="action" value="delete_post">Удалить
+                                <button class="btn_remove" type="submit" name="action" value="delete_post">Видалити
                                 </button>
                             </form>
                         {% endif %}
                     </div>
-
                     <div>{{ post.text }}</div>
                     <hr>
                     <div>

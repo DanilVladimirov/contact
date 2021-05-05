@@ -1,10 +1,15 @@
+from datetime import datetime, timedelta
+
+import jwt
 from django.contrib.staticfiles import storage
+from django.http import HttpResponse
 from django.shortcuts import (render,
                               redirect, get_object_or_404)
-from contact.forms import MyUserForm, CreatePost, UserSettings, ImageUser, BackGroundUser
+from contact.forms import MyUserForm, CreatePost, UserSettings, ImageUser, BackGroundUser, UserNameSurname
 from django.contrib.auth import authenticate, login, logout
 from contact.models import PageUsers, Post, CommentsPost, Follows
 from django.contrib.auth.models import User
+from vk import settings
 
 
 def start_page(request):
@@ -17,11 +22,29 @@ def register(request):
     if request.POST:
         if form.is_valid():
             form.save()
-            page_user = PageUsers.objects.create(user=User.objects.get(username=form.cleaned_data['username']))
+            user = User.objects.get(username=form.cleaned_data['username'])
+            user.first_name = 'Noname'
+            user.last_name = 'Dodik'
+            user.save()
+            page_user = PageUsers.objects.create(user=user)
             page_user.save()
-            return redirect('login_page')
+            login(request, user)
+            return redirect('name_surname_page')
     context = {'form': form}
     return render(request, 'register.html', context)
+
+
+def name_surname_page(request):
+    form = UserNameSurname(request.POST)
+    context = {}
+    if request.POST:
+        user = User.objects.get(id=request.user.id)
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user.save()
+        return redirect('home')
+    context.update({'form': form})
+    return render(request, 'name-surname-page.html', context)
 
 
 def login_user(request):
@@ -37,6 +60,8 @@ def login_user(request):
                                 password=password)
             if user is not None:
                 login(request, user)
+                if request.session.get('oauth') == True:
+                    return redirect('oauth_page')
                 return redirect('home')
             else:
                 pass
@@ -133,9 +158,54 @@ def settings_page(request):
     return render(request, 'settings.html', {'form': form, 'form_img': form_img, 'form_back': form_back})
 
 
-def follows_page(request):
-    curr_user = User.objects.get(username=request.user.username)
-    follow = Follows.objects.get(user=curr_user)
-    followed_users = follow.another_user.all()
-    context = {'followed_users': followed_users}
-    return render(request, 'follow-page.html', context)
+# авторизація через цю соц мережу
+def oauth_page(request):
+    action = request.POST.get('action')
+    site = request.GET.get('site')
+    token = ''
+    if not request.user.is_authenticated:
+        request.session.update({'site': site, 'oauth': True})
+        return redirect('login_page')
+    if request.POST and action == 'login':
+        dt = datetime.now() + timedelta(days=1)
+        token = jwt.encode({
+            'id': request.user.id,
+            'exp': int(dt.strftime('%s'))
+        }, settings.SECRET_KEY, algorithm='HS256')
+        if request.session.get('oauth') == True:
+            site = request.session.get('site')
+            request.session.update({'oauth': False})
+        return redirect("http://" + site + "?token=" + token)
+    return render(request, 'oauth-page.html')
+
+
+def search_func(request):
+    context = {}
+    query = request.GET.get('q')
+    users = User.objects.filter(username__icontains=query)
+    context.update({'users': users})
+    return render(request, 'search-page.html', context)
+
+
+def follow_user(request):
+    if request.POST:
+        user_to_follow = User.objects.get(id=request.POST['user_id'])
+        curr_user = User.objects.get(username=request.user.username)
+        follow = Follows.objects.get(user=curr_user)
+        follow.another_user.add(user_to_follow)
+    return HttpResponse('')
+
+
+def unfollow_user(request):
+    if request.POST:
+        user_page = User.objects.get(id=request.POST['user_id'])
+        curr_user = User.objects.get(username=request.user.username)
+        follow = Follows.objects.get(user=curr_user)
+        follow.another_user.remove(user_page)
+    return HttpResponse('')
+
+
+def user_follows(request, user_id):
+    user = User.objects.get(id=user_id)
+    context = {'users': user.follows.another_user.all()}
+    return render(request, 'user-follows-page.html', context)

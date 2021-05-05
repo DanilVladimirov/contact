@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.forms import ModelForm
 
 from contact.models import User, Post, PageUsers
@@ -8,7 +8,13 @@ from django import forms
 class MyUserForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'password1', 'password2']
+        fields = ['username', 'email', 'password1', 'password2']
+
+
+class UserNameSurname(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name']
 
 
 class CreatePost(forms.ModelForm):

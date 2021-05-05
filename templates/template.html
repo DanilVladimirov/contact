@@ -1,98 +1,103 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <style>
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background-color: #333;
-        width: 100%;
-        top: 0;
-        position: fixed;
-    }
-    body{
-        margin: 57px 0px 0px 0px;
-        font-family: Arial, serif;
-    }
-    li {
-        float: left;
-    }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+            width: 100%;
+            top: 0;
+            position: fixed;
+        }
 
-    li a, .dropbtn {
-        display: inline-block;
-        color: white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-        width: 100px;
-    }
+        body {
+            margin: 57px 0px 0px 0px;
+            font-family: Arial, serif;
+        }
 
-    li a:hover, .dropdown:hover .dropbtn {
-      background-color: red;
-    }
+        li {
+            float: left;
+        }
 
-    li.dropdown {
-      display: inline-block;
-      float: right;
-    }
+        li a, .dropbtn {
+            display: inline-block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            width: 100px;
+        }
 
-    .dropdown-content {
-      display: none;
-      position: fixed;
-      background-color: #f9f9f9;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      z-index: 1;
-    }
+        li a:hover, .dropdown:hover .dropbtn {
+            background-color: red;
+        }
 
-    .dropdown-content a {
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      text-align: left;
-    }
+        li.dropdown {
+            display: inline-block;
+            float: right;
+        }
 
-    .dropdown-content a:hover {background-color: #f1f1f1;}
+        .dropdown-content {
+            display: none;
+            position: fixed;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
 
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-    {% block style %}
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
 
-    {% endblock %}
-</style>
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        {% block style %}
+
+        {% endblock %}
+    </style>
 </head>
 <body>
-
 <ul>
-{#  <li><a href="#home">Home</a></li>#}
-{#  <li><a href="#news">News</a></li>#}
-  {% if user.is_authenticated %}
-  <li class="dropdown">
-      <a href="javascript:void(0)" class="dropbtn">{{ request.user.username }}</a>
-      <div class="dropdown-content">
-          <a href="{% url 'home' %}">Главная</a>
-          <a href="{% url 'settings_page' %}">Настройки</a>
-          <a href="{% url 'follows_page' %}">Подписки</a>
-          <a href="{% url 'logout_page' %}">Выйти</a>
+    <div style="float: left;margin-top: 11px;margin-left: 12px;">
+        <form method="get" action="{% url 'search_page' %}">
+            <input name="q" style="border-radius: 10px;border-style: none;height: 21px;width: 200px;}" type="text">
+            <button type="submit">Q</button>
+        </form>
     </div>
-  </li>
-  {% else %}
-      <li class="dropdown">
-        <a href="{% url 'login_page' %}" class="dropbtn">Login</a>
-      </li>
-  {% endif %}
+    {% if user.is_authenticated %}
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">{{ request.user.username }}</a>
+            <div class="dropdown-content">
+                <a href="{% url 'home' %}">Головна</a>
+                <a href="{% url 'settings_page' %}">Налаштування</a>
+                <a href="{% url 'user_follows_page' request.user.id %}">Підписки</a>
+                <a href="{% url 'logout_page' %}">Вийти</a>
+            </div>
+        </li>
+    {% else %}
+        <li class="dropdown">
+            <a href="{% url 'login_page' %}" class="dropbtn">Login</a>
+        </li>
+    {% endif %}
 </ul>
-
-
-
-
-
 {% block body %}
-
 {% endblock %}
 </body>
 </html>

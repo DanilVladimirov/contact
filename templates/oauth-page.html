@@ -1,0 +1,28 @@
+{% extends 'template.html' %}
+{% block style %}
+    .button_confirm {
+        width: 200px;
+        height: 100px;
+        font-size: 30px;
+        border-color: #77b6e0;
+        border-style: solid;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    .button_confirm:hover {
+        background-color: #77b6e0;
+        color: white;
+        transition: all 0.3s ease;
+    }
+{% endblock %}
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin: auto;background-color: #f7f7f7;width: 600px;text-align: center;border-radius: 10px;">
+            <div style="font-size: 30px;">Ви дозволяєте передати данні на сайт?</div>
+            <div style="padding: 30px;">
+                <button class="button_confirm" name="action" value="login">Так</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

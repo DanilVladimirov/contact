@@ -38,20 +38,15 @@
     }
 {% endblock %}
 {% block body %}
-    <form method="POST" action="">
+    <div style="text-align: center;">
+        <span style="font-size: 35px;">Налаштуйте свою сторінку😄</span>
+    </div>
+    <form method="post">
         {% csrf_token %}
         <div class="create_user">
-            <input required type="text" placeholder="Логін" name="username" id="id_username">
-            <input required type="text" placeholder="@Пошта" name="email" id="id_email">
-            <input required type="password" placeholder="Пароль" name="password1" id="id_password1">
-            <input required type="password" placeholder="Перевірка паролю" name="password2" id="id_password2">
-            <button style="margin: auto" type="submit" name="Create User">Створити</button>
-            <span style="text-align: left;margin-top: 20px;">Є  аккаунт? <a href="{% url 'login_page' %}">Ввійти</a></span>
+            <input placeholder="як вас звати?" type="text" name="first_name" id="id_first_name">
+            <input placeholder="ваше призвіще?" type="text" name="last_name" id="id_last_name">
+            <button type="submit">Готово</button>
         </div>
     </form>
 {% endblock %}
-
-
-
-
-
