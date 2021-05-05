@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -138,3 +139,6 @@ json_google = {
 
 # Google Drive Storage Settings
 GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = 'googledrive.json'
+
+# heroku
+django_heroku.settings(locals())
