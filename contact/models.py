@@ -5,12 +5,15 @@ from django.dispatch import receiver
 from gdstorage.storage import (GoogleDriveStorage,
                                GoogleDrivePermissionType,
                                GoogleDrivePermissionRole,
-                               GoogleDriveFilePermission)
+                               GoogleDriveFilePermission,)
+
+
 permission = GoogleDriveFilePermission(
    GoogleDrivePermissionRole.READER,
-   GoogleDrivePermissionType.USER,
-   "danilvladimirovnkk@gmail.com"
+   GoogleDrivePermissionType.DOMAIN,
+   'contactguys.herokuapp.com'
 )
+
 
 gd_storage = GoogleDriveStorage(permissions=(permission,))
 
