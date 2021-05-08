@@ -148,7 +148,7 @@
     <div class="top">
         <div class="user_main_info">
             {% if page.logo %}
-                <img class="img_user" src="{{ page.logo.url  }}">
+                <img class="img_user" src="{{ page.logo.url }}">
             {% endif %}
             <div class="user_name">
                 <span>{{ page.user.first_name }} {{ page.user.last_name }}</span>
@@ -164,19 +164,19 @@
     </div>
     <br>
     <div class="follows_info">
-            {% if page.user.follows.another_user.all|length > 5 %}
-                {% for user in page.user.follows.another_user.all %}
-                    {% if forloop.counter < 6 %}
-                        <img style="width: 25px;height: 25px;object-fit: cover;"
-                             src="{{ user.pageusers_set.get.logo.url }}">
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                {% for user in page.user.follows.another_user.all %}
-                    <img style="width: 30px;height: 30px;object-fit: cover;border-radius: 50%;"
+        {% if page.user.follows.another_user.all|length > 5 %}
+            {% for user in page.user.follows.another_user.all %}
+                {% if forloop.counter < 6 %}
+                    <img style="width: 25px;height: 25px;object-fit: cover;"
                          src="{{ user.pageusers_set.get.logo.url }}">
-                {% endfor %}
-            {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for user in page.user.follows.another_user.all %}
+                <img style="width: 30px;height: 30px;object-fit: cover;border-radius: 50%;"
+                     src="{{ user.pageusers_set.get.logo.url }}">
+            {% endfor %}
+        {% endif %}
         <span><a href="{% url 'user_follows_page' page.user.id %}">підписки ></a></span>
         <div class="follow_div">
             <form method="post" action="">
@@ -256,8 +256,8 @@
                         </form>
                     </div>
                 </div>
-                </div>
             {% endfor %}
+        </div>
     </div>
     <script>
         function func() {

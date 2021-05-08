@@ -142,18 +142,16 @@ def settings_page(request):
             user.update(first_name=form.cleaned_data['first_name'],
                         last_name=form.cleaned_data['last_name'])
     if request.POST and action == 'logo':
-        form_img = ImageUser(request.POST, request.FILES)
+        user = User.objects.get(username=request.user.username)
+        page_user = PageUsers.objects.filter(user=user)
+        form_img = ImageUser(request.POST, request.FILES, instance=page_user[0])
         if form_img.is_valid():
-            user = User.objects.get(username=request.user.username)
-            page_user = PageUsers.objects.filter(user=user)
-            page_user.update(logo=request.FILES['logo'])
             form_img.save()
     if request.POST and action == 'back_change':
-        form_back = BackGroundUser(request.POST, request.FILES)
+        user = User.objects.get(username=request.user.username)
+        page_user = PageUsers.objects.filter(user=user)
+        form_back = BackGroundUser(request.POST, request.FILES, instance=page_user[0])
         if form_back.is_valid():
-            user = User.objects.get(username=request.user.username)
-            page_user = PageUsers.objects.filter(user=user)
-            page_user.update(background=request.FILES['background'])
             form_back.save()
     return render(request, 'settings.html', {'form': form, 'form_img': form_img, 'form_back': form_back})
 
