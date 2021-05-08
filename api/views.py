@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from vk import settings
 
 
+# text
 def api_gaga(request):
     return JsonResponse('gaga', safe=False)
 
@@ -24,7 +25,7 @@ def user_data(request):
         user = User.objects.get(id=token_decoded['id'])
         serializer = UserDataSerializer(user, many=False)
     except :
-        return Response({'gg': 'gg'})
+        return Response({'error': True})
     return Response(serializer.data)
 
 
