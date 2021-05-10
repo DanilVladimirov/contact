@@ -125,10 +125,12 @@ REST_FRAMEWORK = {
 GOOGLE_DRIVE_STORAGE_JSON_KEY_FILE = 'googledrive.json'
 
 URL_GOOGLE_JSON = os.environ.get('URL_GOOGLE_JSON')
-gdown.download(URL_GOOGLE_JSON, quiet=False)
 
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(gdown.cached_download(URL_GOOGLE_JSON, quiet=False))
-
+if os.path.exists(os.path.join(BASE_DIR, 'googledrive.json')):
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(os.path.join(BASE_DIR, 'googledrive.json'))
+else:
+    gdown.download(URL_GOOGLE_JSON, quiet=False)
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(os.path.join(BASE_DIR, 'googledrive.json'))
 # configuration for media file storing and reriving media file from gcloud
 DEFAULT_FILE_STORAGE = 'vk.gcloud.GoogleCloudMediaFileStorage'
 GS_PROJECT_ID = 'solid-heaven-312719'
