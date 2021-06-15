@@ -1,0 +1,130 @@
+{% extends 'template.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/page-style.css">
+{% endblock %}
+
+{% block body %}
+    {% load contact_tags %}
+    <div style="text-align: center;font-weight: bold;font-size: 30px;">Публікації <i class="far fa-newspaper"></i></div>
+    <div style="width: 600px;margin:auto;">
+        {% if request.user.id == page.user.id %}
+            <div class="create_post">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input required onclick="func()" type="text" placeholder="Заголовок" name="label" id="id_label">
+                    <div class="text_post" id="text_post">
+                        <textarea required type="text" placeholder="Текст" name="text" id="id_text"></textarea>
+                        <input type="submit" value="Submit">
+                    </div>
+                </form>
+            </div>
+        {% else %}
+        {% endif %}
+        {% if posts %}
+        {% else %}
+            <div style="text-align: center;font-size: 40px;font-weight: bold;color: #bfbfbf;">Немає постів :(</div>
+        {% endif %}
+        <div class="posts" style="float: none;">
+            {% for post in posts %}
+                <div class="post">
+                    {% if post.page %}
+                        <div style="display: flex;align-items: center;">
+                            <div>
+                                <img class="comment_user_img" src="{{ post.page.logo.url }}">
+                            </div>
+                            <div style="margin-left: 5px;">
+                                <div><span style="font-weight: bold;"><a style="text-decoration: none;"
+                                                                         href="{% url 'page' post.page.id %}">{{ post.page.user.first_name }} {{ post.page.user.last_name }}</a></span>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div style="display: flex;align-items: center;">
+                            <div>
+                                <img class="comment_user_img" src="{{ post.public_set.get.logo.url }}">
+                            </div>
+                            <div style="margin-left: 5px;">
+                                <div>
+                                    <span style="font-weight: bold;">
+                                    <a style="text-decoration: none;"
+                                       href="{% url 'public_page' post.public_set.get.id %}">{{ post.public_set.get.title }}</a>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div>
+                        <span class="post_label">{{ post.label }}</span>
+                        {% if request.user.username == page.user.username %}
+                            <form style="float: right" method="post" action="">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ post.id }}">
+                                <button class="btn_remove" type="submit" name="action" value="delete_post">
+                                    Видалити
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                    <div>{{ post.text }}</div>
+                    <hr>
+                    <div id="comments_{{ post.id }}">
+                        {% if not post.comments.all %}
+                            немає коментів
+                        {% endif %}
+                        {% for comm in post.comments.all|order_by:"-id" %}
+                            <div style="display: flex;">
+                                <div>
+                                    <img class="comment_user_img"
+                                         src="{{ comm.user.pageusers_set.get.logo.url }}">
+                                </div>
+                                <div style="margin-left: 5px;">
+                                    <div><span
+                                            style="font-weight: bold;"><a
+                                            href="/{{ comm.user.pageusers_set.get.id }}">{{ comm.user.first_name }} {{ comm.user.last_name }}</a></span>
+                                    </div>
+                                    <div><span>{{ comm.text }}</span></div>
+                                </div>
+                            </div>
+                            <br>
+                        {% endfor %}
+                    </div>
+                    <div>
+                        <form method="post" action="" class="comment_form" id="comment_form">
+                            {% csrf_token %}
+                            <textarea required name="text_post" class="comment_input"
+                                      placeholder="Коментар"></textarea>
+                            <input type="hidden" name="id" value="{{ post.id }}">
+                            <button type="submit" name="action" value="add_comm">></button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        $('#comment_form').submit(function (e) {
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            $.ajax({
+                url: {% url 'add_comment' %},
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        $('#comment_form')[0].reset();
+                        $new_post = $('<div style="display: flex;"><div> <img class="comment_user_img" src="' + response.user_img + '"> </div> <div style="margin-left: 5px;"><div><span style="font-weight: bold;"><a href="/' + response.upage_id + '">' + response.first_name + response.last_name + '</a></span> </div> <div><span>' + response.comm_text + '</span></div></div> </div> <br>');
+                        var id_post = 'comments_' + response.post_id;
+                        var wall = document.getElementById(id_post);
+                        var first = wall.childNodes[0];
+                        $new_post.insertBefore(first)
+                    }
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+    </script>
+{% endblock %}

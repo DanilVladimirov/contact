@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.forms import ModelForm
 
-from contact.models import User, Post, PageUsers
+from contact.models import User, Post, PageUsers, ImagesUser, Public
 from django import forms
 
 
@@ -31,12 +31,40 @@ class UserSettings(forms.Form):
 class ImageUser(ModelForm):
     class Meta:
         model = PageUsers
-        fields = '__all__'
-        exclude = ['user', 'background']
+        fields = ['logo']
 
 
 class BackGroundUser(ModelForm):
     class Meta:
         model = PageUsers
+        fields = ['background']
+
+
+class UploadImageForm(ModelForm):
+    class Meta:
+        model = ImagesUser
         fields = '__all__'
-        exclude = ['user', 'logo']
+
+
+class UploadLogoPublicForm(ModelForm):
+    class Meta:
+        model = Public
+        fields = ['logo']
+
+
+class UploadBackPublicForm(ModelForm):
+    class Meta:
+        model = Public
+        fields = ['background']
+
+
+class InfoPublicForm(ModelForm):
+    class Meta:
+        model = Public
+        fields = ['title', 'desc']
+
+
+class CreatePublicForm(ModelForm):
+    class Meta:
+        model = Public
+        fields = ['title', 'desc', 'logo', 'background']

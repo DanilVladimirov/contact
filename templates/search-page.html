@@ -1,6 +1,15 @@
 {% extends 'template.html' %}
 
+{% block head %}
+    <link rel="stylesheet" href="/static/css/all-photos-style.css">
+    <link rel="stylesheet" href="/static/css/page-style.css">
+{% endblock %}
+
 {% block body %}
+    <div style="text-align: center;font-weight: bold;font-size: 30px;">Пошук <i class="fas fa-search"></i></div>
+    {% if not users and not publics %}
+        <div style="text-align: center;font-weight: bold;font-size: 30px;color: #b3b3b3;">Ми нічого не знайшли :(</div>
+    {% endif %}
     <div style="width: 500px;margin: auto;">
         {% load contact_tags %}
         {% for user in users %}
@@ -20,7 +29,7 @@
                               {% else %}style="display: none"{% endif %}>
                             {% csrf_token %}
                             <input type="hidden" id="user_id_{{ user.id }}" value="{{ user.id }}">
-                            <button style="border: none;border-radius: 10px;padding: 5px;background-color: #e8645a;color: white;transition: ease-out 0.2s;"
+                            <button class="img-delete-button"
                                     onclick="unfollow(document.getElementById('user_id_{{ user.id }}').value)">
                                 відписатись
                             </button>
@@ -30,7 +39,7 @@
                               {% else %}style="display: block"{% endif %}>
                             {% csrf_token %}
                             <input type="hidden" id="user_id_{{ user.id }}" value="{{ user.id }}">
-                            <button style="border: none;border-radius: 10px;padding: 5px;background-color: #77b6e0;color: white;transition: ease-out 0.2s;"
+                            <button class="btn-follow"
                                     onclick="follow(document.getElementById('user_id_{{ user.id }}').value)">підписатись
                             </button>
                         </form>
@@ -38,8 +47,57 @@
                 </div>
             {% endif %}
         {% endfor %}
+        {% for pub in publics %}
+            <div style="background-color: #f7f7f7;border-radius: 10px;padding: 10px;display: flex;margin-bottom: 10px;">
+                <div>
+                    <img style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;"
+                         src="{{ pub.logo.url }}">
+                </div>
+                <div style="display: grid;margin-left: 10px;background-color: #e6e6e6; border-radius: 10px;padding: 10px;">
+                    <span><a href="{% url 'public_page' pub.id %}">{{ pub.title }}</a></span>
+                    <span>спільнота</span>
+                </div>
+                <div style="align-self: center;margin-left: auto;">
+                    {% if not request.user.id == pub.creator.id %}
+                        <button
+                                {% if pub in request.user.pageusers_set.get.publics.all %}
+                                    class="img-delete-button"
+                                {% else %}
+                                    class="btn-follow"
+                                {% endif %}
+                                    id="btn_sub_{{ pub.id }}" onclick="follow_pub({{ pub.id }})">
+                            {% if pub in request.user.pageusers_set.get.publics.all %}
+                                відписатись
+                            {% else %}
+                                підписатись
+                            {% endif %}
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
     </div>
+
     <script>
+        function follow_pub(pub_id) {
+            var id_btn = 'btn_sub_' + pub_id;
+            $.ajax({
+                type: 'POST', url: '{% url "sub_to_public" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'pub_id': pub_id},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        document.getElementById(id_btn).setAttribute('class', 'img-delete-button')
+                        document.getElementById(id_btn).textContent = 'відписатись';
+                    } else {
+                        document.getElementById(id_btn).setAttribute('class', 'btn-follow')
+                        document.getElementById(id_btn).textContent = 'підписатись';
+                    }
+                }
+            });
+        }
+
         function follow(user_id) {
             var uid_ = "#user_id_" + user_id;
             $(document).on('submit', "#user_del_id_" + user_id, function (e) {

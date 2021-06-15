@@ -20,7 +20,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['contactguys.herokuapp.com', '127.0.0.1']
 
-WSGI_APPLICATION = 'vk.wsgi.application'
 # Application definition
 
 INSTALLED_APPS = [
@@ -34,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gdstorage',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +66,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'vk.wsgi.application'
+ASGI_APPLICATION = 'vk.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': ["redis://:UnXMlKDUIPqJ9pYJXEnqNzFeR52bBLsP@redis-13885.c266.us-east-1-3.ec2.cloud.redislabs.com:13885"],
+        }
+    }
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -141,3 +152,4 @@ MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
 
 # heroku
 django_heroku.settings(locals())
+LOGIN_URL = 'login_page'

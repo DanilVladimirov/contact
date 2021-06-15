@@ -1,0 +1,64 @@
+.create_user {
+    padding: 20px;
+    background-color: #f2f2f2;
+    text-align: center;
+    margin: auto;
+    width: 30%;
+    display: flex;
+    flex-flow: column wrap;
+    border-radius: 10px;
+}
+
+.create_user input[type=text], input[type=email], input[type=password] {
+    height: 30px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border-style: solid;
+    outline: none;
+}
+
+.create_user button {
+    width: 100px;
+    background: #3783ed;
+    border-radius: 10px;
+    padding: 5px;
+    color: white;
+    border: 2px solid #3786ed;
+    transition: 0.3s all ease;
+}
+
+.create_user button:hover {
+    width: 110px;
+    background: none;
+    color: #3786ed;
+    transition: 0.3s all ease;
+}
+
+.create_user hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #dddddd;
+    border-radius: 10px;
+    width: 100px;
+}
+
+.create_user textarea {
+    max-width: 295px;
+    min-width: 295px;
+    width: 295px;
+    height: 100px;
+    border-radius: 10px;
+    border-width: 2px;
+    border-style: solid;
+    margin-bottom: 10px;
+    outline: none;
+    font-family: inherit;
+}
+
+.create_user select {
+    padding: 7px;
+    border-radius: 10px;
+    border-width: 2px;
+    margin-bottom: 10px;
+    outline: none;
+}

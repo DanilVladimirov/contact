@@ -1,0 +1,465 @@
+.img_user {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user_main_info {
+    background-color: #f7f7f7;
+    width: 400px;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    height: 100px;
+}
+
+.user_name {
+    margin: auto;
+    text-align: center;
+    font-size: 30px;
+    border-radius: 10px;
+}
+
+.user_theme {
+    height: 120px;
+    padding: 0px;
+}
+
+.img_theme {
+    width: 530px;
+    height: 120px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+}
+
+.create_post {
+    float: right;
+    background-color: #f7f7f7;
+    padding: 10px;
+    text-align: center;
+    border-radius: 10px;
+    width: 510px;
+    margin-bottom: 20px;
+}
+
+#id_label {
+    border: none;
+    width: 100%;
+    height: 30px;
+    border-radius: 10px;
+}
+
+#id_text {
+    resize: none;
+    width: 100%;
+    height: 150px;
+    border: none;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.posts {
+    border-radius: 10px;
+    float: right;
+}
+
+.post {
+    background-color: #f7f7f7;
+    margin-bottom: 10px;
+    padding: 10px;
+    word-wrap: break-word;
+    border: 2px solid #dddddd;
+    border-radius: 10px;
+}
+
+.post hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #dddddd;
+    border-radius: 10px;
+}
+
+.post_label {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.btn_remove {
+    border: none;
+    background-color: #ed3e3e;
+    color: white;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.comment_input {
+    height: 25px;
+    border: none;
+    border-radius: 10px;
+    resize: none;
+    outline: none;
+    font-family: Arial, serif;
+    transition: all 0.2s ease-out;
+}
+
+.comment_input:focus {
+    height: 100px;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.2s ease-out;
+}
+
+.follows_info {
+    width: 400px;
+    background-color: #f7f7f7;
+    border: none;
+    border-radius: 10px;
+    height: 30px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.follow_div {
+    float: right;
+}
+
+/*.follow_div button {*/
+/*    border: none;*/
+/*    border-radius: 10px;*/
+/*    padding: 5px;*/
+/*    background-color: #77b6e0;*/
+/*    color: white;*/
+/*    transition: ease-out 0.2s;*/
+/*}*/
+
+/*.follow_div button:hover {*/
+/*    background-color: white;*/
+/*    color: #77b6e0;*/
+/*    transition: ease-out 0.2s;*/
+/*}*/
+
+.input_title:focus .text_post {
+    display: block;
+}
+
+.text_post {
+    display: none;
+}
+
+.comment_user_img {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.comment_form {
+    display: grid;
+}
+
+.comment_form button {
+    width: 40px;
+    background: #3786ed;
+    border-radius: 10px;
+    padding: 5px;
+    margin-top: 10px;
+    color: white;
+    border: 2px solid #3786ed;
+    transition: 0.3s all ease;
+}
+
+
+.comment_form button:hover {
+    width: 50px;
+    background: none;
+    color: #3786ed;
+    transition: 0.3s all ease;
+}
+
+.btn_send {
+    width: 40px;
+    background: #3786ed;
+    border-radius: 10px;
+    padding: 5px;
+    margin-top: 10px;
+    color: white;
+    border: 2px solid #3786ed;
+    transition: 0.3s all ease;
+}
+
+
+.btn_send:hover {
+    width: 50px;
+    background: none;
+    color: #3786ed;
+    transition: 0.3s all ease;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    animation-name: open;
+    animation-duration: 0.3s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+    animation-delay: 0s;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@keyframes open {
+    0% {
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+    }
+    100% {
+        display: block;
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.file-upload {
+    background-color: #ffffff;
+    width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.file-upload-btn {
+    width: 100%;
+    margin: 0;
+    color: white;
+    background: #3786ed;
+    border: 2px solid #3786ed;
+    padding: 10px;
+    border-radius: 10px;
+    transition: all .3s ease;
+    outline: none;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.file-upload-btn:hover {
+    background: none;
+    color: #3786ed;
+    transition: all .3s ease;
+    cursor: pointer;
+}
+
+.file-upload-btn:active {
+    border: 0;
+    transition: all .2s ease;
+}
+
+.file-upload-content {
+    display: none;
+    text-align: center;
+}
+
+.file-upload-input {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.image-upload-wrap {
+    margin-top: 20px;
+    border: 2px dashed #3786ed;
+    position: relative;
+    color: #3786ed;
+    transition: all 0.3s ease-out;
+    border-radius: 10px;
+}
+
+.file-upload-content input[type='text'] {
+    width: 100%;
+    padding: 5px;
+    border-radius: 10px;
+    border: 2px solid #3786ed;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.file-upload-content input[type='text']:focus {
+    padding: 8px;
+    transition: all 0.3s ease;
+}
+
+.image-dropping,
+.image-upload-wrap:hover {
+    background-color: #3786ed;
+    border: 2px dashed #ffffff;
+    color: white;
+    transition: all 0.3s ease-out;
+}
+
+.image-title-wrap {
+    padding: 0 15px 15px 15px;
+    color: #222;
+}
+
+.drag-text {
+    text-align: center;
+}
+
+.drag-text h3 {
+    font-weight: 100;
+    text-transform: uppercase;
+    padding: 60px 0;
+}
+
+.file-upload-image {
+    border-radius: 10px;
+    margin: 10px;
+    max-height: 300px;
+    max-width: 300px;
+    object-fit: cover;
+}
+
+.remove-image {
+    margin: 0;
+    color: #fff;
+    background: #cd4535;
+    border: 2px solid #cd4535;
+    padding: 10px;
+    border-radius: 10px;
+    transition: all .3s ease;
+    outline: none;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.remove-image:hover {
+    background: none;
+    color: #c13b2a;
+    transition: all .3s ease;
+    cursor: pointer;
+}
+
+.remove-image:active {
+    border: 0;
+    transition: all .3s ease;
+}
+
+.btn-upload-img {
+    width: 100px;
+    background: #3786ed;
+    border-radius: 10px;
+    padding: 5px;
+    margin-top: 10px;
+    color: white;
+    border: 2px solid #3786ed;
+    transition: 0.3s all ease;
+}
+
+.btn-upload-img:hover {
+    width: 110px;
+    background: none;
+    color: #3786ed;
+    transition: 0.3s all ease;
+}
+
+.last_imgs {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.last_imgs img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.all_photos {
+    position: absolute;
+    margin-top: -80px;
+    width: 130px;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+}
+
+.btn-follow {
+    width: 100px;
+    background: #3783ed;
+    border-radius: 10px;
+    padding: 5px;
+    color: white;
+    border: 2px solid #3786ed;
+    transition: 0.3s all ease;
+}
+
+.btn-follow:hover {
+    width: 110px;
+    background: none;
+    color: #3786ed;
+    transition: 0.3s all ease;
+}
+
+.link_icon {
+    text-decoration: none;
+}
+
+.text_desc {
+    font-size: 0;
+    transition: all 0.2s ease;
+}
+
+.link_icon:hover .text_desc {
+    font-size: 16px;
+    transition: 0.2s all ease;
+}

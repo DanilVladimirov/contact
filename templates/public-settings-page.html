@@ -1,0 +1,178 @@
+{% extends 'template.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/page-settings-style.css">
+{% endblock %}
+
+{% block body %}
+    <div style="display:flex;">
+        <div>
+            <div><a style="text-decoration: none;" href="{% url 'public_page' public.id %}">< до спільноти</a></div>
+            <div style="font-size: 40px;font-weight: bold;">Налаштування</div>
+            <div style="display: flex;">
+                <form class="card-form" style="margin-left: 0;" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card color_blue" style="width: 250px;">
+                        <div>Логотип</div>
+                        <input type="file" accept="image/*" name="logo">
+                        <button name="action" value="logo">змінити</button>
+                    </div>
+                </form>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card color_green">
+                        <div>Тема</div>
+                        <input type="file" accept="image/*" name="background">
+                        <button name="action" value="back">змінити</button>
+                    </div>
+                </form>
+            </div>
+            <form method="post" style="width: 605px;margin-top: 10px;">
+                <div class="card">
+                    {% csrf_token %}
+                    <div>Інформація</div>
+                    <input type="text" placeholder="назва спільноти" name="title" value="{{ public.title }}">
+                    <textarea class="text-info-public" placeholder="опис" name="desc">{{ public.desc }}</textarea>
+                    <button name="action" value="info">змінити</button>
+                </div>
+            </form>
+        </div>
+        <div style="margin-left: 10px;">
+            {% if not request.user in public.admins.all %}
+                <div style="font-weight: bold;font-size: 20px;">Адміни</div>
+                <div style="width: 400px;">
+                    {% load contact_tags %}
+                    {% for user in public.admins.all %}
+                        {% if user.id != request.user.id %}
+                            <div id="user_admin_{{ user.id }}"
+                                 style="background-color: #f7f7f7;border-radius: 10px;padding: 10px;display: flex;margin-bottom: 10px;">
+                                <div>
+                                    <img style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;"
+                                         src="{{ user.pageusers_set.get.logo.url }}">
+                                </div>
+                                <div style="display: grid;margin-left: 10px;background-color: #e6e6e6; border-radius: 10px;padding: 10px;">
+                                <span><a
+                                        href="{% url 'page' user.pageusers_set.get.id %}">{{ user.username }}</a></span>
+                                    <span>{{ user.first_name }} {{ user.last_name }}</span>
+                                </div>
+                                <div style="align-self: center;margin-left: auto;">
+                                    <button class="button-remove" style="margin-top: 0;font-weight: bold;"
+                                            id="btn_admin_{{ user.id }}"
+                                            onclick="set_admin({{ user.id }})">звільнити
+                                    </button>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div style="font-weight: bold;font-size: 20px;">Модератори</div>
+            <div style="width: 400px;">
+                {% load contact_tags %}
+                {% for user in public.moders.all %}
+                    {% if user.id != request.user.id %}
+                        <div id="user_moder_{{ user.id }}"
+                             style="background-color: #f7f7f7;border-radius: 10px;padding: 10px;display: flex;margin-bottom: 10px;">
+                            <div>
+                                <img style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;"
+                                     src="{{ user.pageusers_set.get.logo.url }}">
+                            </div>
+                            <div style="display: grid;margin-left: 10px;background-color: #e6e6e6; border-radius: 10px;padding: 10px;">
+                                <span><a
+                                        href="{% url 'page' user.pageusers_set.get.id %}">{{ user.username }}</a></span>
+                                <span>{{ user.first_name }} {{ user.last_name }}</span>
+                            </div>
+                            <div style="align-self: center;margin-left: auto;">
+                                <button class="button-remove" style="margin-top: 0;font-weight: bold;"
+                                        id="btn_moder_{{ user.id }}"
+                                        onclick="set_moder({{ user.id }})">звільнити
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if request.user in public.admins.all or request.user.id == public.creator.id %}
+                    <div style="font-weight: bold;font-size: 20px;">Заблоковані</div>
+                    <div style="width: 400px;">
+                        {% load contact_tags %}
+                        {% for user in public.black_list.all %}
+                            {% if user.id != request.user.id %}
+                                <div id="user_{{ user.id }}"
+                                     style="background-color: #f7f7f7;border-radius: 10px;padding: 10px;display: flex;margin-bottom: 10px;">
+                                    <div>
+                                        <img style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;"
+                                             src="{{ user.pageusers_set.get.logo.url }}">
+                                    </div>
+                                    <div style="display: grid;margin-left: 10px;background-color: #e6e6e6; border-radius: 10px;padding: 10px;">
+                                <span><a
+                                        href="{% url 'page' user.pageusers_set.get.id %}">{{ user.username }}</a></span>
+                                        <span>{{ user.first_name }} {{ user.last_name }}</span>
+                                    </div>
+                                    <div style="align-self: center;margin-left: auto;">
+                                        <button class="button-remove" style="margin-top: 0;font-weight: bold;"
+                                                id="btn_admin_{{ user.id }}"
+                                                onclick="del_from_bl({{ user.id }})">розблокувати
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script>
+        function del_from_bl(userid) {
+            $.ajax({
+                type: 'POST', url: '{% url "del_from_bl" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'user_id': userid, 'public_id': {{ public.id }}},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        var uid = "#user_" + userid;
+                        document.querySelectorAll(uid).forEach(e => e.remove());
+                    } else {
+
+                    }
+                }
+            });
+        }
+
+        function set_admin(userid) {
+            $.ajax({
+                type: 'POST', url: '{% url "set_admin" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'user_id': userid, 'public_id': {{ public.id }}},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+
+                    } else {
+                        var user = "#user_admin_" + userid;
+                        $(user).remove();
+                    }
+                }
+            });
+        }
+
+        function set_moder(userid) {
+            $.ajax({
+                type: 'POST', url: '{% url "set_moder" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'user_id': userid, 'public_id': {{ public.id }}},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+
+                    } else {
+                        var user = "#user_moder_" + userid;
+                        $(user).remove();
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

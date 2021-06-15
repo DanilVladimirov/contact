@@ -1,0 +1,40 @@
+.create_user {
+    padding: 20px;
+    background-color: #f2f2f2;
+    text-align: center;
+    margin: auto;
+    width: 30%;
+    display: flex;
+    flex-flow: column wrap;
+    border-radius: 10px;
+}
+
+.create_user input {
+    height: 30px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border-style: solid;
+}
+
+.create_user button {
+    margin: auto;
+    height: 30px;
+    width: 100px;
+    border-style: solid;
+    border-radius: 10px;
+    border-color: #5294f7;
+    transition: all 0.3s ease;
+}
+
+.create_user button:hover {
+    background-color: #5294f7;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.create_user button:active {
+    background-color: #3686ff;
+    border-color: #297eff;
+    color: white;
+    transition: all 0.3s ease;
+}

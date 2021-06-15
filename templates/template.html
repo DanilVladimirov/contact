@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="google-site-verification" content="RhG98Hs7Rjv6qJdPErPm9XzYXXkj4rKBJKSTeSwoYZA"/>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    {#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"#}
+    {#          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">#}
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script>var csrf_token = $('{% csrf_token %}').val(); </script>
+    {#    <link rel="stylesheet" href="/static/css/nav-bar-style.css">#}
+    <script src="https://kit.fontawesome.com/589dc909f6.js" crossorigin="anonymous"></script>
     <style>
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
+        .navbar {
+        {#list-style-type: none;#} padding: 0;
             overflow: hidden;
-            background-color: #333;
-            width: 100%;
+            background: linear-gradient(to right, #396afc, #2948ff);
+            width: 1000px;
             top: 0;
-            position: fixed;
+            border-radius: 10px;
+            margin: auto;
         }
 
         body {
-            margin: 57px 0px 0px 0px;
+            margin: 0;
+            padding: 0;
             font-family: Arial, serif;
         }
 
@@ -32,7 +39,18 @@
             text-align: center;
             padding: 14px 16px;
             text-decoration: none;
-            width: 100px;
+        }
+
+        .link {
+            visibility: hidden;
+            font-size: 0;
+            transition: all 0.3s ease;
+        }
+
+        .dropbtn:hover .link {
+            visibility: visible;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
 
         li a:hover, .dropdown:hover .dropbtn {
@@ -41,7 +59,7 @@
 
         li.dropdown {
             display: inline-block;
-            float: right;
+            float: left;
         }
 
         .dropdown-content {
@@ -69,36 +87,89 @@
             display: block;
         }
 
+        .search-button {
+            background: none;
+            border: none;
+            width: 30px;
+        }
+
+        .search-button i {
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .search-button:hover i {
+            color: white;
+            transform: rotate(100deg);
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .search-input {
+            border-radius: 10px;
+            border-style: none;
+            height: 21px;
+            width: 200px;
+            outline: none;
+        }
+
         {% block style %}
 
         {% endblock %}
     </style>
+    {% block head %}
+    {% endblock %}
 </head>
 <body>
-<ul>
-    <div style="float: left;margin-top: 11px;margin-left: 12px;">
-        <form method="get" action="{% url 'search_page' %}">
-            <input name="q" style="border-radius: 10px;border-style: none;height: 21px;width: 200px;}" type="text">
-            <button type="submit">Q</button>
-        </form>
-    </div>
-    {% if user.is_authenticated %}
-        <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn">{{ request.user.username }}</a>
-            <div class="dropdown-content">
-                <a href="{% url 'home' %}">Головна</a>
-                <a href="{% url 'settings_page' %}">Налаштування</a>
-                <a href="{% url 'user_follows_page' request.user.id %}">Підписки</a>
-                <a href="{% url 'logout_page' %}">Вийти</a>
+<div>
+    <div class="navbar" style="z-index: 1;margin-top: 10px;margin-bottom: 10px;">
+        <span style="font-weight: bold;" class="dropbtn" onclick="location.href='{% url 'start_page' %}'"><i class="fas fa-id-badge"></i>
+            Contact
+        </span>
+        {% if not request.user.is_authenticated %}
+            <a style="float: right;" href="{% url 'login_page' %}" class="dropbtn"><i class="fas fa-sign-in-alt"></i>
+                <span class="link"> Вхід</span></a>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+            <a style="float: right;" href="{% url 'logout_page' %}" class="dropbtn"><i
+                    class="fas fa-sign-out-alt"></i><span
+                    class="link"> Вихід</span></a>
+            <div style="float: right;margin-top: 11px;margin-right: 12px;">
+                <form method="get" action="{% url 'search_page' %}">
+                    <input name="q" class="search-input" type="text" placeholder="пошук...">
+                    <button class="search-button" type="submit"><i class="fas fa-search"></i></button>
+                </form>
             </div>
-        </li>
-    {% else %}
-        <li class="dropdown">
-            <a href="{% url 'login_page' %}" class="dropbtn">Login</a>
-        </li>
-    {% endif %}
-</ul>
-{% block body %}
-{% endblock %}
+            <a href="{% url 'home' %}" class="dropbtn"><span class="fa fa-home"></span> <span
+                    class="link">Головна</span></a>
+            <a href="{% url 'settings_page' %}" class="dropbtn"><i class="fas fa-cog"></i><span
+                    class="link"> Налаштування</span></a>
+            <a href="{% url 'rooms' %}" class="dropbtn"><i class="fas fa-comments"></i><span
+                    class="link"> Месенджер</span></a>
+            <a href="{% url 'user_follows_page' request.user.id %}" class="dropbtn">
+                <i class="fas fa-user-friends"></i>
+                <span class="link"> Підписки</span></a>
+            <a href="{% url 'pubs_user' request.user.id %}" class="dropbtn"><i class="fas fa-users"></i>
+                <span class="link"> Спільноти</span></a>
+            <a href="{% url 'news_page' %}" class="dropbtn"><i class="far fa-newspaper"></i><span
+                    class="link"> Публікації</span></a>
+
+        {% else %}
+            {#            <li class="dropdown">#}
+            {#                <a href="{% url 'login_page' %}" class="dropbtn">Login</a>#}
+            {#            </li>#}
+        {% endif %}
+    </div>
+</div>
+<div style="width: 1000px;min-height: 700px;margin: auto;">
+    {% block body %}
+    {% endblock %}
+</div>
+<div>
+    <div style="padding-top: 10px;padding-bottom: 10px;text-align: center;background: #353232;color: white;border-radius: 10px;width: 1000px;margin: auto;margin-bottom: 10px">
+        (c) Contact by Danil Vladimirov 2021
+    </div>
+</div>
+</script>
 </body>
 </html>

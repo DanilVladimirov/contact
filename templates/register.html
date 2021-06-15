@@ -38,6 +38,7 @@
     }
 {% endblock %}
 {% block body %}
+    <div style="text-align: center;font-weight: bold;font-size: 30px;">Реєстрація</div>
     <form method="POST" action="">
         {% csrf_token %}
         <div class="create_user">
@@ -46,7 +47,8 @@
             <input required type="password" placeholder="Пароль" name="password1" id="id_password1">
             <input required type="password" placeholder="Перевірка паролю" name="password2" id="id_password2">
             <button style="margin: auto" type="submit" name="Create User">Створити</button>
-            <span style="text-align: left;margin-top: 20px;">Є  аккаунт? <a href="{% url 'login_page' %}">Ввійти</a></span>
+            <span style="text-align: left;margin-top: 20px;">Є  аккаунт? <a
+                    href="{% url 'login_page' %}">Ввійти</a></span>
         </div>
     </form>
 {% endblock %}

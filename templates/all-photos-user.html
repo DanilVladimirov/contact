@@ -1,0 +1,78 @@
+{% extends 'template.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/all-photos-style.css">
+    <link rel="stylesheet" href="/static/css/page-style.css">
+{% endblock %}
+
+{% block body %}
+    <div style="text-align: center;font-weight: bold;font-size: 30px;">Фотографії <i class="fas fa-images"></i></div>
+    <div id="myModal" class="modal">
+        <div class="modal-content" style="width: 0; display: table;">
+            <div>
+                <span class="close">&times;</span>
+                <div id="imgtitle" style="font-weight: bold;"></div>
+            </div>
+            <div style="text-align: center;">
+                <img id="imguser" src="#" style="height: 400px;border-radius: 10px;">
+            </div>
+            <div style="display: flex;align-items: center;">
+                <button id="del_btn" class="img-delete-button">видалити</button>
+                <div id="img_msg" style="color: #e74343;margin-left: 10px;">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div style="display: flex;flex-wrap: wrap;justify-content: center;">
+        {% for img in imgs %}
+            <div style="margin: 10px;" class="img-user"
+                 onclick="view_img('{{ img.img.url }}', '{{ img.title }}', {{ img.id }})" id="img_{{ img.id }}">
+                <img src="{{ img.img.url }}">
+                <div class="img-text">переглянути</div>
+            </div>
+        {% endfor %}
+    </div>
+    <script>
+        var modal = document.getElementById("myModal");
+        var btn = document.getElementById("myBtn");
+        var span = document.getElementsByClassName("close")[0];
+
+        function view_img(url_img, title, img_id) {
+            modal.style.display = "block";
+            document.getElementById('imguser').setAttribute('src', url_img);
+            document.getElementById('imgtitle').textContent = title;
+            document.getElementById('del_btn').setAttribute('onclick', 'del_img(' + img_id + ')');
+        }
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+                document.getElementById('img_msg').textContent = '';
+            }
+        }
+
+        function del_img(img_id) {
+            $.ajax({
+                type: 'POST', url: '{% url "del_img" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'img_id': img_id},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        var img = "#img_" + img_id;
+                        $(img).remove();
+                        document.getElementById('img_msg').textContent = 'видалено !';
+                    } else {
+
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

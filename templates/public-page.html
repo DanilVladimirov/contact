@@ -1,0 +1,352 @@
+{% extends 'template.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/public-style.css">
+    <link rel="stylesheet" href="/static/css/page-style.css">
+    <link rel="stylesheet" href="/static/css/all-photos-style.css">
+{% endblock %}
+{% load contact_tags %}
+{% block body %}
+    <div id="myModal_img" class="modal">
+        <div class="modal-content" style="width: 0; display: table;">
+            <div>
+                <span class="close" id="close_img">&times;</span>
+                <div id="imgtitle" style="font-weight: bold;"></div>
+            </div>
+            <div style="text-align: center;">
+                <img id="imguser" src="#" style="height: 400px;border-radius: 10px;">
+            </div>
+
+            <div style="display: flex;align-items: center;">
+                {% if request.user.id == public.creator.id or request.user in public.moders.all or request.user in public.admins.all %}
+                    <button id="del_btn" class="img-delete-button">видалити</button>
+                    <div id="img_msg" style="color: #e74343;margin-left: 10px;">
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close" id="close">&times;</span>
+            <div class="file-upload">
+                <button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">
+                    додати картинку
+                </button>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="image-upload-wrap">
+                        <input class="file-upload-input" type='file' name="img" onchange="readURL(this);"
+                               accept="image/*"/>
+                        <div class="drag-text">
+                            <h3>або перетягніть файл сюди</h3>
+                        </div>
+                    </div>
+                    <div class="file-upload-content">
+                        <img class="file-upload-image" src="#" alt="your image"/>
+                        <div class="image-title-wrap">
+                            <button type="button" onclick="removeUpload()" class="remove-image">Видалити <span
+                                    class="image-title">загружене зображення</span></button>
+                        </div>
+                        <div><input type="text" name="title" placeholder="підпис до картинки..."></div>
+                        <div>
+                            <button type="submit" class="btn-upload-img" name="action" value="upload">загрузити</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="public-info-div">
+        <div style="width: 750px;" class="public-info-left">
+            <img class="public-background" src="{{ public.background.url }}">
+            <div>
+                <span style="font-size: 25px;font-weight: bold;">Про нас</span>
+                <span class="public-type">{{ public.type_public.name }}</span>
+            </div>
+            <div>{{ public.desc }}</div>
+            <hr class="cool_line">
+
+            {# -------------------- PHOTOS ----------------- #}
+
+            <div style="display: flex;flex-wrap: wrap;">
+                {% for img in public.imgs.all|order_by:"-id"|slice:":5" %}
+                    <div class="img_public" id="img_{{ img.id }}"
+                         {% if forloop.counter == 5 %}onclick="location.href='{% url 'public_imgs' public.id %}'"{% endif %}>
+                        {% if forloop.counter == 5 %}
+                            <img src="{{ img.img.url }}" style="margin-right: 0;filter: blur(3px);">
+                            <div class="all_photos" style="width: 140px;">всі фото <i class="fas fa-images"></i></div>
+                        {% else %}
+                            <img src="{{ img.img.url }}"
+                                 onclick="view_img('{{ img.img.url }}', '{{ img.title }}', {{ img.id }})">
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            {% if request.user.id == public.creator.id or request.user in public.moders.all or request.user in public.admins.all %}
+                <button id="myBtn" class="btn-upload-img">додати фото</button>
+            {% endif %}
+            <div><span style="font-size: 25px;font-weight: bold;">Публікації</span></div>
+            {% if request.user.id == public.creator.id or request.user in public.moders.all or request.user in public.admin.all %}
+                <div class="create_post" style="float: none;width: auto;">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input required onclick="func()" type="text" placeholder="Заголовок" name="label" id="id_label">
+                        <div class="text_post" id="text_post">
+                            <textarea required type="text" placeholder="Текст" name="text" id="id_text"></textarea>
+                            <button name="action" value="new_post" class="btn-follow">створити</button>
+                        </div>
+                    </form>
+                </div>
+            {% else %}
+            {% endif %}
+            {% if public.posts %}
+            {% else %}
+                <div style="text-align: center;font-size: 40px;font-weight: bold;color: #bfbfbf;">Немає постів :(</div>
+            {% endif %}
+            <div class="posts" style="float: none;">
+                {% for post in public.posts.all|order_by:"-id" %}
+                    <div class="post" id="post_{{ post.id }}">
+                        <div>
+                            <span class="post_label">{{ post.label }}</span>
+                            {% if request.user.id == public.creator.id or request.user in public.moders.all %}
+                                <button class="btn_remove" onclick="del_post({{ post.id }})" style="float: right;">
+                                    Видалити
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div>{{ post.text }}</div>
+                        <hr>
+                        <div id="comments_{{ post.id }}">
+                            {% if not post.comments.all %}
+                                немає коментів
+                            {% endif %}
+                            {% for comm in post.comments.all|order_by:"-id" %}
+                                <div style="display: flex;margin-bottom: 10px;" id="comm_user_{{ comm.user.id }}">
+                                    <div>
+                                        <img class="comment_user_img"
+                                             src="{{ comm.user.pageusers_set.get.logo.url }}">
+                                    </div>
+                                    <div style="margin-left: 5px;">
+                                        <div><span
+                                                style="font-weight: bold;"><a
+                                                href="/{{ comm.user.pageusers_set.get.id }}">{{ comm.user.first_name }} {{ comm.user.last_name }}</a></span>
+                                            {% if request.user.id == public.creator.id or request.user in public.admins.all %}
+                                                {% if comm.user.id != request.user.id and comm.user.id != public.creator.id %}
+                                                    <button onclick="add_to_bl({{ comm.user.id }})"
+                                                            class="img-delete-button" style="padding: 0px;">заблокувати
+                                                    </button>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div><span>{{ comm.text }}</span></div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {% if request.user.pageusers_set.get in public.pageusers_set.all %}
+                                <form method="post" action="" class="comment_form" id="comment_form">
+                                    {% csrf_token %}
+                                    <textarea required name="text_post" class="comment_input"
+                                              placeholder="Коментар"></textarea>
+                                    <input type="hidden" name="id" value="{{ post.id }}">
+                                    <button type="submit" name="action" value="add_comm">></button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div>
+            <div class="public-info-right">
+                <div><img class="public-logo" src="{{ public.logo.url }}"></div>
+                <div class="public-title">{{ public.title }}</div>
+                <div>
+                    {% if request.user.id == public.creator.id %}
+                        <button class="button-sub" onclick="location.href='{% url 'public_settings' public.id %}'">
+                            налаштування
+                        </button>
+                    {% else %}
+                        {% if not public in request.user.pageusers_set.get.publics.all %}
+                            <form method="post">
+                                {% csrf_token %}
+                                <button class="button-sub" name="action" value="sub">підписатись</button>
+                            </form>
+                        {% else %}
+                            <form method="post">
+                                {% csrf_token %}
+                                <button class="button-sub" name="action" value="unsub">відписатись</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div>
+                    <button class="button-sub" onclick="location.href='{% url 'public_subscribers' public.id %}'">
+                        підписники
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function add_to_bl(userid) {
+            $.ajax({
+                type: 'POST', url: '{% url "add_to_bl" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'user_id': userid, 'public_id': {{ public.id }}},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        var uid = "#comm_user_" + userid;
+                        document.querySelectorAll(uid).forEach(e => e.remove());
+                        {#document.getElementById('img_msg').textContent = 'видалено !';#}
+                    } else {
+
+                    }
+                }
+            });
+        }
+
+        function del_img(img_id) {
+            $.ajax({
+                type: 'POST', url: '{% url "del_img" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'img_id': img_id},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        var img = "#img_" + img_id;
+                        $(img).remove();
+                        document.getElementById('img_msg').textContent = 'видалено !';
+                    } else {
+
+                    }
+                }
+            });
+        }
+
+        $('#comment_form').submit(function (e) {
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            $.ajax({
+                url: {% url 'add_comment' %},
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        $('#comment_form')[0].reset();
+                        $new_post = $('<div style="display: flex;"><div> <img class="comment_user_img" src="' + response.user_img + '"> </div> <div style="margin-left: 5px;"><div><span style="font-weight: bold;"><a href="/' + response.upage_id + '">' + response.first_name + response.last_name + '</a></span> </div> <div><span>' + response.comm_text + '</span></div></div> </div> <br>');
+                        var id_post = 'comments_' + response.post_id;
+                        var wall = document.getElementById(id_post);
+                        var first = wall.childNodes[0];
+                        $new_post.insertBefore(first)
+                    }
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+
+        function del_post(post_id) {
+            $.ajax({
+                type: 'POST', url: '{% url "del_post" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'post_id': post_id},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        var post = "#post_" + post_id;
+                        $(post).remove();
+                    } else {
+
+                    }
+                }
+            });
+        }
+
+        function func() {
+            document.getElementById("text_post").style.display = "block";
+        }
+
+        var modal_img = document.getElementById("myModal_img");
+        var span_img = document.getElementById('close_img');
+
+        function view_img(url_img, title, img_id) {
+            modal_img.style.display = "block";
+            document.getElementById('imguser').setAttribute('src', url_img);
+            document.getElementById('imgtitle').textContent = title;
+            document.getElementById('del_btn').setAttribute('onclick', 'del_img(' + img_id + ')');
+        }
+
+        span_img.onclick = function () {
+            modal_img.style.display = "none";
+        }
+
+        var modal = document.getElementById("myModal");
+        var btn = document.getElementById("myBtn");
+        var span = document.getElementById("close");
+        try {
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+        } catch (Exception) {
+
+        }
+
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+            if (event.target == modal_img) {
+                modal_img.style.display = "none";
+                document.getElementById('img_msg').textContent = '';
+            }
+        }
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('.image-upload-wrap').hide();
+
+                    $('.file-upload-image').attr('src', e.target.result);
+                    $('.file-upload-content').show();
+
+                    $('.image-title').html(input.files[0].name);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+
+            } else {
+                removeUpload();
+            }
+        }
+
+        function removeUpload() {
+            $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+            $('.file-upload-content').hide();
+            $('.image-upload-wrap').show();
+        }
+
+        $('.image-upload-wrap').bind('dragover', function () {
+            $('.image-upload-wrap').addClass('image-dropping');
+        });
+        $('.image-upload-wrap').bind('dragleave', function () {
+            $('.image-upload-wrap').removeClass('image-dropping');
+        });
+    </script>
+{% endblock %}

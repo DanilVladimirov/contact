@@ -1,38 +1,11 @@
 {% extends 'template.html' %}
-{% block style %}
-    .card{
-    padding: 20px;
-    text-align: center;
-    display: flex;
-    flex-flow: column wrap;
-    border-radius: 10px;
-    border-style: solid;
-
-    }
-    .card input[type=text]{
-    height: 30px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    border-style: solid;
-    }
-    .color_blue {
-        border-color: #7db1ff;
-    }
-    .color_green {
-        border-color: #7cdb5e;
-    }
-    .card button{
-    margin: auto;
-    height: 30px;
-    width: 100px;
-    border-style: solid;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    }
+{% block head %}
+    <link rel="stylesheet" href="/static/css/page-settings-style.css">
 {% endblock %}
 {% block body %}
-    <div style="display: flex">
-        <form style="margin-right: 10px;margin-left: 10px;" action="" method="post">
+    <div style="text-align: center;font-weight: bold;font-size: 30px;">Налаштування <i class="fas fa-cog"></i></div>
+    <div style="display: flex;justify-content: center;">
+        <form class="card-form" action="" method="post">
             {% csrf_token %}
             <div class="card color_blue" style="width: 250px;">
                 <span style="font-size: 30px;"><b>Профайл 🤓</b></span>
@@ -50,11 +23,12 @@
                     <button type="submit" name="action" value="logo">Змінити</button>
                 </div>
             </form>
-            <form style="margin-right: 10px;" method="post" action="" enctype="multipart/form-data">
+            <form style="margin-right: 10px;" method="post" enctype="multipart/form-data">
                 <div class="card">
                     {% csrf_token %}
                     <span style="font-size: 30px;"><b>Тема 🏞</b></span>
-                    <input style="margin-bottom: 10px;" type="file" name="background" accept="image/*" id="id_background">
+                    <input style="margin-bottom: 10px;" type="file" name="background" accept="image/*"
+                           id="id_background">
                     <button type="submit" name="action" value="back_change">Змінити</button>
                 </div>
             </form>

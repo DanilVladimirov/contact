@@ -1,0 +1,87 @@
+{% extends 'template.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/all-photos-style.css">
+    <link rel="stylesheet" href="/static/css/page-style.css">
+{% endblock %}
+
+{% block body %}
+    <div style="text-align: center;font-weight: bold;font-size: 30px;">Спільноти <i class="fas fa-users"></i></div>
+
+    <div style="width: 500px;margin: auto;">
+        <button class="btn-follow" style="margin-bottom: 10px;" onclick="location.href='{% url 'create_public' %}'">Створити <i
+                class="fas fa-users"></i>
+        </button>
+        {% for pub in pubs %}
+            <div style="background-color: #f7f7f7;border-radius: 10px;padding: 10px;display: flex;margin-bottom: 10px;">
+                <div>
+                    <img style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;"
+                         src="{{ pub.logo.url }}">
+                </div>
+                <div style="display: grid;margin-left: 10px;background-color: #e6e6e6; border-radius: 10px;padding: 10px;">
+                    <span><a href="{% url 'public_page' pub.id %}">{{ pub.title }}</a></span>
+                    <span>спільнота</span>
+                </div>
+                <div style="align-self: center;margin-left: auto;">
+                    {% if not request.user.id == pub.creator.id %}
+                        <button
+                                {% if pub in request.user.pageusers_set.get.publics.all %}
+                                    class="img-delete-button"
+                                {% else %}
+                                    class="btn-follow"
+                                {% endif %}
+                                    id="btn_sub_{{ pub.id }}" onclick="follow_pub({{ pub.id }})">
+                            {% if pub in request.user.pageusers_set.get.publics.all %}
+                                відписатись
+                            {% else %}
+                                підписатись
+                            {% endif %}
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function follow_pub(pub_id) {
+            var id_btn = 'btn_sub_' + pub_id;
+            $.ajax({
+                type: 'POST', url: '{% url "sub_to_public" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'pub_id': pub_id},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        document.getElementById(id_btn).setAttribute('class', 'img-delete-button')
+                        document.getElementById(id_btn).textContent = 'відписатись';
+                    } else {
+                        document.getElementById(id_btn).setAttribute('class', 'btn-follow')
+                        document.getElementById(id_btn).textContent = 'підписатись';
+                    }
+                }
+            });
+        }
+
+        function follow(user_id) {
+            var uid_ = "#user_id_" + user_id;
+            $(document).on('submit', "#user_del_id_" + user_id, function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: {% url 'follow_user' %},
+                    data: {
+                        user_id: $(uid_).val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function () {
+                        var form_follow = "user_del_id_" + user_id;
+                        var form_unfollow = "user_unfollow_id_" + user_id;
+                        document.getElementById(form_follow).style.setProperty("display", "none");
+                        document.getElementById(form_unfollow).style.setProperty("display", "block");
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock %}

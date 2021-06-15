@@ -1,0 +1,183 @@
+{% extends 'template.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/public-style.css">
+    <link rel="stylesheet" href="/static/css/page-style.css">
+    <link rel="stylesheet" href="/static/css/all-photos-style.css">
+{% endblock %}
+
+{% block body %}
+    <div><a style="text-decoration: none;" href="{% url 'public_page' public.id %}">< до спільноти</a></div>
+    <div style="width: 500px;margin: auto;">
+        <div style="margin-bottom: 40px;">
+            <form method="post" style="text-align: center;margin-bottom: 10px;">
+                {% csrf_token %}
+                <input name="query"
+                       style="padding: 6px;font-size: 16px;width: 300px;border-radius: 10px;border: 2px solid;outline: none;">
+                <button name="action" value="search" class="button-sub">пошук</button>
+            </form>
+        </div>
+        {% load contact_tags %}
+        {% for user in users %}
+            {% if user.id != request.user.id %}
+                <div style="background-color: #f7f7f7;border-radius: 10px;padding: 10px;display: flex;margin-bottom: 10px;"
+                     id="user_{{ user.id }}">
+                    <div>
+                        <img style="width: 50px;height: 50px;object-fit: cover;border-radius: 50%;"
+                             src="{{ user.pageusers_set.get.logo.url }}">
+                    </div>
+                    <div style="display: grid;margin-left: 10px;background-color: #e6e6e6; border-radius: 10px;padding: 10px;">
+                        <span><a href="{% url 'page' user.pageusers_set.get.id %}">{{ user.username }}</a></span>
+                        <span>{{ user.first_name }} {{ user.last_name }}</span>
+                    </div>
+                    <div style="align-self: center;margin-left: auto;display: flex;">
+                        {% if request.user in public.admins.all or request.user.id == public.creator.id %}
+                            <button onclick="add_to_bl({{ user.id }})"
+                                    style="position: absolute;margin-top: -35px;margin-left: 140px;padding: 0px;"
+                                    class="img-delete-button">заблокувати
+                            </button>
+                        {% endif %}
+                        {% if request.user in public.moders.all or not request.user.id == public.creator.id and not request.user in public.admins.all %}
+                            <form method="post" id="user_unfollow_id_{{ user.id }}"
+                                  {% if request.user.id|followed:user.id %}style="display: block"
+                                  {% else %}style="display: none"{% endif %}>
+                                {% csrf_token %}
+                                <input type="hidden" id="user_id_{{ user.id }}" value="{{ user.id }}">
+                                <button class="img-delete-button"
+                                        onclick="unfollow(document.getElementById('user_id_{{ user.id }}').value)">
+                                    відписатись
+                                </button>
+                            </form>
+                            <form method="post" id="user_del_id_{{ user.id }}"
+                                  {% if request.user.id|followed:user.id %}style="display: none"
+                                  {% else %}style="display: block"{% endif %}>
+                                {% csrf_token %}
+                                <input type="hidden" id="user_id_{{ user.id }}" value="{{ user.id }}">
+                                <button class="btn-follow"
+                                        onclick="follow(document.getElementById('user_id_{{ user.id }}').value)">
+                                    підписатись
+                                </button>
+                            </form>
+                        {% endif %}
+                        {% if request.user.id == public.creator.id %}
+                            {% if user in public.admins.all %}
+                                <button class="button-sub" style="margin-top: 0;font-weight: bold;"
+                                        id="btn_admin_{{ user.id }}" onclick="set_admin({{ user.id }})">адмін ✔
+                                </button>
+                            {% else %}
+                                <button class="button-sub" style="margin-top: 0;font-weight: bold;"
+                                        id="btn_admin_{{ user.id }}" onclick="set_admin({{ user.id }})">адмін
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                        {% if request.user in public.admins.all or request.user.id == public.creator.id %}
+                            {% if user in public.moders.all %}
+                                <button class="button-sub" style="margin-top: 0;font-weight: bold;"
+                                        id="btn_moder_{{ user.id }}" onclick="set_moder({{ user.id }})">модератор ✔
+                                </button>
+                            {% else %}
+                                <button class="button-sub" style="margin-top: 0;font-weight: bold;"
+                                        id="btn_moder_{{ user.id }}" onclick="set_moder({{ user.id }})">модератор
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <script>
+        function add_to_bl(userid) {
+            $.ajax({
+                type: 'POST', url: '{% url "add_to_bl" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'user_id': userid, 'public_id': {{ public.id }}},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        var uid = "#user_" + userid;
+                        document.querySelectorAll(uid).forEach(e => e.remove());
+                    } else {
+
+                    }
+                }
+            });
+        }
+
+        function set_admin(userid) {
+            var btn_id = 'btn_admin_' + userid;
+            $.ajax({
+                type: 'POST', url: '{% url "set_admin" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'user_id': userid, 'public_id': {{ public.id }}},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        document.getElementById(btn_id).textContent = 'адмін ✔';
+                    } else {
+                        document.getElementById(btn_id).textContent = 'адмін';
+                    }
+                }
+            });
+        }
+
+        function set_moder(userid) {
+            var btn_id = 'btn_moder_' + userid;
+            $.ajax({
+                type: 'POST', url: '{% url "set_moder" %}',
+                data: {'csrfmiddlewaretoken': csrf_token, 'user_id': userid, 'public_id': {{ public.id }}},
+                dataType: 'json',
+                cache: false,
+                success: function (data) {
+                    if (data.success) {
+                        document.getElementById(btn_id).textContent = 'модератор ✔';
+                    } else {
+                        document.getElementById(btn_id).textContent = 'модератор';
+                    }
+                }
+            });
+        }
+
+        function follow(user_id) {
+            var uid_ = "#user_id_" + user_id;
+            $(document).on('submit', "#user_del_id_" + user_id, function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: {% url 'follow_user' %},
+                    data: {
+                        user_id: $(uid_).val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function () {
+                        var form_follow = "user_del_id_" + user_id;
+                        var form_unfollow = "user_unfollow_id_" + user_id;
+                        document.getElementById(form_follow).style.setProperty("display", "none");
+                        document.getElementById(form_unfollow).style.setProperty("display", "block");
+                    }
+                });
+            });
+        }
+
+        function unfollow(user_id) {
+            var uid_ = "#user_id_" + user_id;
+            $(document).on('submit', "#user_unfollow_id_" + user_id, function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: {% url 'unfollow_user' %},
+                    data: {
+                        user_id: $(uid_).val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function () {
+                        var form_unfollow = "user_unfollow_id_" + user_id;
+                        var form_follow = "user_del_id_" + user_id;
+                        document.getElementById(form_unfollow).style.setProperty("display", "none");
+                        document.getElementById(form_follow).style.setProperty("display", "block");
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock %}

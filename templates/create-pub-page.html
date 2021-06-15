@@ -1,0 +1,28 @@
+{% extends 'template.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/login-style.css">
+{% endblock %}
+
+{% block body %}
+    <div style="font-weight: bold;font-size: 30px;text-align: center;color: gray;">Нова спільнота</div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="create_user">
+            <div style="text-align: left;font-weight: bold;font-size: 20px;">Логотип</div>
+            <input type="file" accept="image/*" name="logo" required>
+            <div style="text-align: left;font-weight: bold;font-size: 20px;">Картинка на фон</div>
+            <input type="file" accept="image/*" name="background" required>
+            <hr>
+            <div style="text-align: left;font-weight: bold;font-size: 20px;">Тематика</div>
+            <select name="type_id">
+                {% for type in types %}
+                    <option value="{{ type.id }}">{{ type.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="title" placeholder="назва спільноти" required>
+            <textarea name="desc" placeholder="опис"></textarea>
+            <button>Створити !</button>
+        </div>
+    </form>
+{% endblock %}

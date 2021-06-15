@@ -1,6 +1,12 @@
 {% extends 'template.html' %}
 
+{% block head %}
+    <link rel="stylesheet" href="/static/css/page-style.css">
+    <link rel="stylesheet" href="/static/css/all-photos-style.css">
+{% endblock %}
+
 {% block body %}
+    <div style="text-align: center;font-weight: bold;font-size: 30px;">Підписники <i class="fas fa-user-friends"></i></div>
     <div style="width: 500px;margin: auto;">
         {% load contact_tags %}
         {% for user in users %}
@@ -20,7 +26,7 @@
                               {% else %}style="display: none"{% endif %}>
                             {% csrf_token %}
                             <input type="hidden" id="user_id_{{ user.id }}" value="{{ user.id }}">
-                            <button style="border: none;border-radius: 10px;padding: 5px;background-color: #e8645a;color: white;transition: ease-out 0.2s;"
+                            <button class="img-delete-button"
                                     onclick="unfollow(document.getElementById('user_id_{{ user.id }}').value)">
                                 відписатись
                             </button>
@@ -30,7 +36,7 @@
                               {% else %}style="display: block"{% endif %}>
                             {% csrf_token %}
                             <input type="hidden" id="user_id_{{ user.id }}" value="{{ user.id }}">
-                            <button style="border: none;border-radius: 10px;padding: 5px;background-color: #77b6e0;color: white;transition: ease-out 0.2s;"
+                            <button class="btn-follow"
                                     onclick="follow(document.getElementById('user_id_{{ user.id }}').value)">підписатись
                             </button>
                         </form>

@@ -1,1 +1,58 @@
 {% extends 'template.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/start-page-style.css">
+{% endblock %}
+
+{% block body %}
+    <div class="card-1">
+        <div class="title">знайомтесь</div>
+        <div style="font-size: 200px;text-align: center;font-weight: bold;">
+            <i style="color: #3869fc;" class="fas fa-id-badge"></i><span style="color: #2d2d2d;">Contact</span>
+        </div>
+    </div>
+
+    <div class="card-2">
+        <div class="title">Діліться своїми думками та емоціями</div>
+        <div><img style="width: 200px;" src="/static/smile.svg"></div>
+        <div style="text-align: center;margin-top: 30px;">
+            <img style="width: 100%;border-radius: 10px;" src="/static/profile.png">
+        </div>
+    </div>
+
+    <div class="card-3">
+        <div class="title">Підписуйтесь, пишіть, вивчайте інтереси
+            знайомих
+        </div>
+        <div style="text-align: center;">
+            <img style="width: 100%;border-radius: 10px;" src="/static/profile_features.png">
+        </div>
+    </div>
+
+    <div class="card-4">
+        <div class="title">Спільноти <i class="fas fa-users"></i></div>
+        <div style="text-align: center;">
+            <img style="width: 100%;border-radius: 10px;" src="/static/groups.png">
+        </div>
+        <div class="text">Об'єднуйте людей зі спільними інтересами !
+        </div>
+    </div>
+
+    <div class="card-5">
+        <div style="text-align: center;width: 50%;">
+            <img style="width: 100%;border-radius: 5px;" src="/static/chat.png">
+        </div>
+        <div class="title">Спілкуйтесь<i class="fas fa-comments"></i></div>
+    </div>
+
+    <div class="card-6">
+        <div class="title">Та не пропускайте найголовніше</div>
+        <div style="text-align: center;width: 100%;">
+            <img style="width: 50%;border-radius: 5px;" src="/static/news.png">
+        </div>
+    </div>
+
+    <div class="card-7">
+        <button class="btn-join" onclick="location.href='{% url 'register_page' %}'">Приєднатись!</button>
+    </div>
+{% endblock %}

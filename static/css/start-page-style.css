@@ -1,0 +1,116 @@
+.btn-join {
+    padding: 20px;
+    width: 200px;
+    border-radius: 10px;
+    font-size: 20px;
+    background: #3869fc;
+    color: white;
+    border: 2px solid #3869fc;
+    transition: all 0.3s ease;
+}
+
+.btn-join:hover {
+    background: none;
+    width: 220px;
+    color: #3869fc;
+    transition: all 0.3s ease;
+}
+
+.card-1 {
+    background: aliceblue;
+    padding-top: 150px;
+    padding-bottom: 150px;
+    border-radius: 10px;
+}
+
+.card-1 .title {
+    color: cornflowerblue;
+    font-weight: bold;
+    font-size: 80px;
+    text-align: center;
+}
+
+.card-2 {
+    background: #d9dcff;
+    border-radius: 10px;
+    padding: 50px;
+    margin-top: 10px;
+}
+
+.card-2 .title {
+    font-size: 90px;
+    font-weight: bold;
+    color: #2d2d2d;
+}
+
+.card-3 {
+    background: #f58b8b;
+    border-radius: 10px;
+    padding: 50px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.card-3 .title {
+    font-size: 50px;
+    font-weight: bold;
+    color: #6f3c3c;
+}
+
+.card-4 {
+    background: #e6fddc;
+    border-radius: 10px;
+    padding: 50px;
+    margin-top: 10px;
+}
+
+.card-4 .title {
+    font-size: 70px;
+    font-weight: bold;
+    color: #3c4439;
+}
+
+.card-4 .text {
+    font-size: 50px;
+    font-weight: bold;
+    color: #7a966e;
+}
+
+.card-5 {
+    background: #c7e6f3;
+    border-radius: 10px;
+    padding: 50px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-5 .title {
+    font-size: 60px;
+    font-weight: bold;
+    color: #527584;
+}
+
+.card-6 {
+    background: #f3eac7;
+    border-radius: 10px;
+    padding: 50px;
+    margin-top: 10px;
+}
+
+.card-6 .title {
+    font-size: 60px;
+    font-weight: bold;
+    color: #b1a269;
+}
+
+.card-7 {
+    background: #353232;
+    border-radius: 10px;
+    padding: 50px;
+    margin-top: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+}
