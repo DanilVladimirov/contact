@@ -80,10 +80,10 @@
     <div style="display: flex;justify-content: space-between;">
         <div style="float: left;">
             <div class="follows_info">
-                {% if page.user.follows.another_user.all|length > 5 %}
+                {% if page.user.follows.another_user.all|length > 4 %}
                     {% for user in page.user.follows.another_user.all %}
                         {% if forloop.counter < 5 %}
-                            <img style="width: 25px;height: 25px;object-fit: cover;"
+                            <img style="width: 30px;height: 30px;object-fit: cover;border-radius: 50%;margin-right: 10px;"
                                  src="{{ user.pageusers_set.get.logo.url }}">
                         {% endif %}
                     {% endfor %}

@@ -8,6 +8,8 @@ from django.http import HttpResponse
 from django.shortcuts import (render,
                               redirect,
                               get_object_or_404)
+from django.utils.translation import gettext, ugettext
+
 from contact.forms import (MyUserForm,
                            CreatePost,
                            UserSettings,
@@ -45,9 +47,10 @@ def start_page(request):
 
 
 def register(request):
-    form = MyUserForm(request.POST)
+    form = MyUserForm()
     storage.used = True
     if request.POST:
+        form = MyUserForm(request.POST)
         if form.is_valid():
             form.save()
             user = User.objects.get(username=form.cleaned_data['username'])
@@ -77,6 +80,7 @@ def name_surname_page(request):
 
 def login_user(request):
     storage.used = True
+    context = {}
     if request.user.is_authenticated:
         return redirect('home')
     else:
@@ -86,14 +90,15 @@ def login_user(request):
             user = authenticate(request,
                                 username=username,
                                 password=password)
+
             if user is not None:
                 login(request, user)
                 if request.session.get('oauth') == True:
                     return redirect('oauth_page')
                 return redirect('home')
             else:
-                pass
-        context = {}
+                context = {'error': True}
+
         return render(request, 'login.html', context)
 
 
@@ -180,7 +185,6 @@ def settings_page(request):
     form_img = ImageUser(request.POST)
     form_back = BackGroundUser(request.POST)
     action = request.POST.get('action')
-    print(request.POST)
     if request.POST and action == 'user_name':
         if form.is_valid():
             user = User.objects.filter(username=request.user.username)
@@ -196,13 +200,11 @@ def settings_page(request):
         user = User.objects.get(username=request.user.username)
         page_user = PageUsers.objects.filter(user=user)
         form_back = BackGroundUser(request.POST, request.FILES, instance=page_user[0])
-        print(request.POST.get('background'))
         if form_back.is_valid():
             form_back.save()
     return render(request, 'settings.html', {'form': form, 'form_img': form_img, 'form_back': form_back})
 
 
-# авторизація мережу
 def oauth_page(request):
     action = request.POST.get('action')
     site = request.GET.get('site')

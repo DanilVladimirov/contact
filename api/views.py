@@ -11,11 +11,6 @@ from django.contrib.auth.models import User
 from vk import settings
 
 
-# text
-def api_gaga(request):
-    return JsonResponse('gaga', safe=False)
-
-
 # доступ до даних користувача через токен
 @api_view(['GET'])
 def user_data(request):
@@ -28,13 +23,3 @@ def user_data(request):
         return Response({'error': True})
     return Response(serializer.data)
 
-
-class HelloView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        content = {'first_name': request.user.first_name,
-                   'last_name': request.user.last_name,
-                   'email': request.user.email}
-
-        return Response(content)

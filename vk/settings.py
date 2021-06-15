@@ -22,6 +22,7 @@ ALLOWED_HOSTS = ['contactguys.herokuapp.com', '127.0.0.1']
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'contact',
     'api',
@@ -34,7 +35,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'gdstorage',
     'channels',
+    'django_extensions'
 ]
+
+GRAPH_MODELS = {
+    "all_applications": True,
+    "group_models": True,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -109,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uk-UA'
 
 TIME_ZONE = 'UTC'
 
@@ -153,3 +160,11 @@ MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
 # heroku
 django_heroku.settings(locals())
 LOGIN_URL = 'login_page'
+
+#emails
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'makrosrytp@gmail.com'
+EMAIL_HOST_PASSWORD = 'vla01rov02'
+

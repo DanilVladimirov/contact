@@ -1,44 +1,29 @@
 {% extends 'template.html' %}
-{% block style %}
-    .create_user{
-    padding: 20px;
-    background-color: #f2f2f2;
-    text-align: center;
-    margin: auto;
-    width: 30%;
-    display: flex;
-    flex-flow: column wrap;
-    border-radius: 10px;
-    }
-    .create_user input{
-    height: 30px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    border-style: solid;
-    }
-    .create_user button{
-    margin: auto;
-    height: 30px;
-    width: 100px;
-    border-style: solid;
-    border-radius: 10px;
-    border-color: #5294f7;
-    transition: all 0.3s ease;
-    }
-    .create_user button:hover{
-    background-color: #5294f7;
-    color: white;
-    transition: all 0.3s ease;
-    }
-    .create_user button:active{
-    background-color: #3686ff;
-    border-color: #297eff;
-    color: white;
-    transition: all 0.3s ease;
-    }
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/register-style.css">
 {% endblock %}
+
 {% block body %}
+    {% load contact_tags %}
+
     <div style="text-align: center;font-weight: bold;font-size: 30px;">Реєстрація</div>
+    <div style="width: 34%;margin: auto;text-align: left;">
+        {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div>
+                        <strong style="color: #d44040;">{{ error|escape|translate|safe }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div>
+                    <strong style="color: #d44040;">{{ error|escape|translate|safe }}</strong>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
     <form method="POST" action="">
         {% csrf_token %}
         <div class="create_user">

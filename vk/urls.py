@@ -34,8 +34,11 @@ from contact.views import (start_page,
                            sub_to_public,
                            publics_user,
                            create_public)
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+
+from vk.settings import EMAIL_HOST_USER
 
 urlpatterns = [
     path('api/', include('api.urls')),
@@ -73,8 +76,15 @@ urlpatterns = [
     path('del_from_bl/', del_from_blacklist, name='del_from_bl'),
     path('sub_to_public/', sub_to_public, name='sub_to_public'),
     path('publics/<int:user_id>/', publics_user, name='pubs_user'),
-    path('create_pub/', create_public, name='create_public')
-
+    path('create_pub/', create_public, name='create_public'),
+    path('password_reset/',
+         auth_views.PasswordResetView.as_view(
+             email_template_name='registration/password_reset_email1.html', from_email=EMAIL_HOST_USER
+         ),
+         name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

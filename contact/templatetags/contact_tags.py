@@ -1,7 +1,7 @@
 from django import template
 from contact.models import Follows, Room
 from django.contrib.auth.models import User
-
+from translate import Translator
 
 register = template.Library()
 
@@ -39,6 +39,12 @@ def order_by(queryset, arg):
 @register.filter(name='get_user')
 def get_user(username):
     if User.objects.filter(username=username).exists():
-        return  User.objects.get(username=username)
+        return User.objects.get(username=username)
     else:
         return False
+
+
+@register.filter(name='translate')
+def translate_text(text):
+    translator = Translator(from_lang='en', to_lang='uk-UA')
+    return translator.translate(text)

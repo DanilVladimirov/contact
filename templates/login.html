@@ -8,10 +8,17 @@
     <form method="POST" action="">
         {% csrf_token %}
         <div class="create_user">
+            <div style="text-align: left;color: #d44040;">
+                {% if error %}
+                    неправильні данні
+                {% endif %}
+            </div>
             <input required type="text" placeholder="Логін" name="username" id="id_username">
             <input required type="password" placeholder="Пароль" name="password">
             <button type="submit" name="Create User">Ввійти</button>
             <span style="text-align: left;margin-top: 20px;">Ще немаєте акаунт? <a href="{% url 'register_page' %}">Створіть!</a></span>
+            <a href="{% url 'password_reset' %}"
+               style="text-align: left;color: gray;text-decoration: none;margin-top: 10px;">забули пароль ?</a>
         </div>
     </form>
 {% endblock %}
