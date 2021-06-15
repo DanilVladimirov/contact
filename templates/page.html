@@ -169,10 +169,10 @@
                 <div class="create_post">
                     <form action="" method="post">
                         {% csrf_token %}
-                        <input required onclick="func()" type="text" placeholder="Заголовок" name="label"
-                               id="id_label">
+                        <input onclick="func()" type="text" placeholder="Заголовок" name="label"
+                               id="id_label" oninvalid="this.setCustomValidity('Введіть тему поста!')" required>
                         <div class="text_post" id="text_post">
-                            <textarea required type="text" placeholder="Текст" name="text" id="id_text"></textarea>
+                            <textarea required type="text" placeholder="Текст" name="text" id="id_text" oninvalid="this.setCustomValidity('Введіть текст!')"></textarea>
                             <button style="float: left;" type="submit" class="btn_send">></button>
                         </div>
                     </form>
@@ -218,11 +218,11 @@
                             {% endfor %}
                         </div>
                         <div>
-                            {% if request.user in followers.another_users.all %}
+                            {% if request.user in followers.another_users.all or request.user.id == page.user.id %}
                                 <form method="post" action="" class="comment_form" id="comment_form">
                                     {% csrf_token %}
-                                    <textarea required name="text_post" class="comment_input"
-                                              placeholder="Коментар"></textarea>
+                                    <textarea name="text_post" class="comment_input"
+                                              placeholder="Коментар" oninvalid="this.setCustomValidity('Введіть текст!')" required ></textarea>
                                     <input type="hidden" name="id" value="{{ post.id }}">
                                     <button type="submit" name="action" value="add_comm">></button>
                                 </form>
