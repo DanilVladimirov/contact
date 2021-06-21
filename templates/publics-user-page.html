@@ -9,9 +9,13 @@
     <div style="text-align: center;font-weight: bold;font-size: 30px;">Спільноти <i class="fas fa-users"></i></div>
 
     <div style="width: 500px;margin: auto;">
-        <button class="btn-follow" style="margin-bottom: 10px;" onclick="location.href='{% url 'create_public' %}'">Створити <i
+        <button class="btn-follow" style="margin-bottom: 10px;" onclick="location.href='{% url 'create_public' %}'">
+            Створити <i
                 class="fas fa-users"></i>
         </button>
+        {% if not pubs %}
+            <div style="text-align: center;font-size: 40px;font-weight: bold;color: #bfbfbf;">Немає постів :(</div>
+        {% endif %}
         {% for pub in pubs %}
             <div style="background-color: #f7f7f7;border-radius: 10px;padding: 10px;display: flex;margin-bottom: 10px;">
                 <div>

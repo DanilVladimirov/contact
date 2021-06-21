@@ -239,10 +239,10 @@ def search_func(request):
         users_last_name = User.objects.filter(last_name__icontains=query)
         users = users_username.union(users_first_name)
         users = users.union(users_last_name)
-    publics = Public.objects.filter(title__icontains=query)
+    publics = Public.objects.filter(title__icontains=query).exclude(black_list__in=[request.user])
     type_pub = Types.objects.filter(name__icontains=query)
     if type_pub.exists():
-        publics_type = Public.objects.filter(type_public=type_pub[0])
+        publics_type = Public.objects.filter(type_public=type_pub[0]).exclude(black_list__in=[request.user])
         publics = list(publics) + list(publics_type)
     context.update({'users': users,
                     'publics': publics})
@@ -333,8 +333,8 @@ def followers_user(request, user_id):
 def news_page(request):
     users = Follows.objects.get(user=request.user).another_user.all()
     publics = PageUsers.objects.get(user=request.user).publics.all()
+    posts = None
     if users.exists():
-        posts = None
         for user in users:
             if user.pageusers_set.get().post_set.all().exists():
                 if posts is None:
@@ -342,6 +342,7 @@ def news_page(request):
                 else:
                     posts = posts.union(user.pageusers_set.get().post_set.all())
 
+    if publics.exists():
         posts_pubs = None
         for pub in publics:
             if pub.posts.all():
@@ -349,11 +350,14 @@ def news_page(request):
                     posts_pubs = pub.posts.all()
                 else:
                     posts_pubs = posts_pubs.union(pub.posts.all())
+            if posts is not None:
+                if len(posts_pubs) != 0:
+                    posts = posts.union(posts_pubs)
+            else:
+                if len(posts_pubs) != 0:
+                    posts = posts_pubs
+            posts = posts.order_by('-id')
 
-        posts = posts.union(posts_pubs)
-        posts = posts.order_by('-id')
-    else:
-        posts = []
     context = {'posts': posts}
 
     return render(request, 'news-page.html', context)
