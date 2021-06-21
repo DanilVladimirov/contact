@@ -54,8 +54,8 @@ def register(request):
         if form.is_valid():
             form.save()
             user = User.objects.get(username=form.cleaned_data['username'])
-            user.first_name = 'Noname'
-            user.last_name = 'Dodik'
+            user.first_name = 'Новий'
+            user.last_name = 'Користувач'
             user.save()
             page_user = PageUsers.objects.create(user=user)
             page_user.save()
@@ -334,6 +334,7 @@ def news_page(request):
     users = Follows.objects.get(user=request.user).another_user.all()
     publics = PageUsers.objects.get(user=request.user).publics.all()
     posts = None
+    posts_pubs = None
     if users.exists():
         for user in users:
             if user.pageusers_set.get().post_set.all().exists():
@@ -343,7 +344,6 @@ def news_page(request):
                     posts = posts.union(user.pageusers_set.get().post_set.all())
 
     if publics.exists():
-        posts_pubs = None
         for pub in publics:
             if pub.posts.all():
                 if posts_pubs is None:
@@ -351,12 +351,13 @@ def news_page(request):
                 else:
                     posts_pubs = posts_pubs.union(pub.posts.all())
             if posts is not None:
-                if len(posts_pubs) != 0:
+                if posts_pubs is not None:
                     posts = posts.union(posts_pubs)
             else:
-                if len(posts_pubs) != 0:
+                if posts_pubs is not None:
                     posts = posts_pubs
-            posts = posts.order_by('-id')
+    if posts_pubs is not None or posts is not None:
+        posts = posts.order_by('-id')
 
     context = {'posts': posts}
 

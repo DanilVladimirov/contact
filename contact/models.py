@@ -26,7 +26,7 @@ class PageUsers(models.Model):
                              on_delete=models.SET_NULL,
                              null=True,
                              default=None)
-    logo = models.ImageField(upload_to=photo_path, null=True, blank=True, default='default-user.jpeg')
+    logo = models.ImageField(upload_to=photo_path, null=True, blank=True, default='user-default.jpeg')
     background = models.ImageField(upload_to=photo_path, blank=True, null=True)
     imgs = models.ManyToManyField(ImagesUser)
     publics = models.ManyToManyField('Public')

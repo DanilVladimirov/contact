@@ -183,7 +183,7 @@
             {% else %}
                 <span style="margin-left: 24px">Немає постів</span>
             {% endif %}
-            <div class="posts">
+            <div class="posts" style="width: 530px;">
                 {% for post in posts|order_by:"-id" %}
                     <div class="post" id="post_{{ post.id }}">
                         <div>
