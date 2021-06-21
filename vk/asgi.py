@@ -8,7 +8,7 @@ import contact.routing
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vk.settings')
 
 application = ProtocolTypeRouter({
-    "https": get_asgi_application(),
+    "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter(
             contact.routing.websocket_urlpatterns
