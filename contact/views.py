@@ -208,6 +208,7 @@ def settings_page(request):
 def oauth_page(request):
     action = request.POST.get('action')
     site = request.GET.get('site')
+    context = {'site': site}
     token = ''
     if not request.user.is_authenticated:
         request.session.update({'site': site, 'oauth': True})
@@ -222,7 +223,7 @@ def oauth_page(request):
             site = request.session.get('site')
             request.session.update({'oauth': False})
         return redirect("http://" + site + "?token=" + token)
-    return render(request, 'oauth-page.html')
+    return render(request, 'oauth-page.html', context)
 
 
 def search_func(request):
