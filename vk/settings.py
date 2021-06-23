@@ -155,10 +155,10 @@ MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
 django_heroku.settings(locals())
 LOGIN_URL = 'login_page'
 
-#emails
+# emails
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'makrosrytp@gmail.com'
-EMAIL_HOST_PASSWORD = 'vla01rov02'
+EMAIL_HOST_PASSWORD = os.environ.get('PASSWORD_EMAIL')
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
